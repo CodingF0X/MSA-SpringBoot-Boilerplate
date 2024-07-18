@@ -141,3 +141,189 @@ eureka.client.fetch-registry=true
 <br/> 
 Do the same for microservice2 !
 
+## CHAPTER 3: Adding Spring Cloud Config
+### Introduction to Spring Cloud Config
+
+**Spring Cloud Config** provides server-side and client-side support for externalized configuration in a distributed system. It allows microservices to use a centralized configuration server.
+
+<br/>
+
+### Setting Up Spring Cloud Config Server
+1- Create a Spring Cloud Config Server Project:
+<br/>
+
+- Use [Spring Initializr](https://start.spring.io/) to generate a new project with the **Config Server** dependency. <br/>
+- Name the project config-server.
+<br/>
+
+2- Setup Config Server: <br/>
+open the project and add the @EnableConfigServer annotation to the main application class:
+
+```Java
+@SpringBootApplication
+@EnableConfigServer
+public class ConfigServerApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ConfigServerApplication.class, args);
+    }
+}
+```
+
+<br/>
+
+3- Configure Config Server:
+<br/>
+Update application.properties:
+<br/>
+
+```Java
+spring.application.name=config-server
+server.port=8888
+spring.profiles.active=native
+spring.cloud.config.server.native.searchlocations =classpath:config/
+```
+note: in these configigurations we are using .properties file to store the configurations locally on the server. <br/>
+In *resources* folder create config folder : <br/>
+../resources/config <br/>
+add the following .properties files: <br/>
+- microservice1.properties <br/>
+in this file add configurations required in microservice 1. For the sake of this boilerplate, i will add api endpoints from microservice 2: <br/>
+service2.data.endpoint=/microservice2 <br/>
+microservice2.properties<br/>
+service1.data.endpoint=/microservice1
+<br/>
+
+### Integrate the services with the Spring Cloud Config
+<br/>
+
+**Microservice 1** <br/>
+
+```Java
+@SpringBootApplication
+@EnableDiscoveryClient
+public class Microservice1Application {
+
+	public static void main(String[] args) {
+		SpringApplication.run(Microservice1Application.class, args);
+	}
+
+	@Bean
+    @LoadBalanced
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+}
+```
+
+<br/>
+
+```Java
+@RestController
+public class Microservice_1_Controller {
+
+    // Api endpoint from microservice 2 we want to access from this service.
+    @Value("${service2.data.endpoint}")
+    private String service2url;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Autowired
+    private DiscoveryClient discoveryClient;
+
+    @GetMapping("/microservice1")
+    public String getMessage() {
+        return "Message from Microservice 1";
+    }
+    @GetMapping("/callService2")
+    public String callService2() {
+        // Discover service instances of microservice2
+        List<ServiceInstance> instances = discoveryClient.getInstances("microservice2");
+
+        if (instances != null && !instances.isEmpty()) {
+            ServiceInstance serviceInstance = instances.get(0);
+            String url = "http://" + serviceInstance.getServiceId() + service2url;
+            // ResponseEntity<String> resoinse = restTemplate.getForEntity(url,
+            // String.class);
+            // return resoinse.toString();
+            return restTemplate.getForObject(url, String.class);
+        } // String url = "http://localhost:8082"
+        return "Service 2 not available";
+    }
+}
+```
+
+<br/>
+
+**Microservice 2**  <br/>
+
+```Java
+
+@SpringBootApplication
+@EnableDiscoveryClient
+public class Microservice2Application {
+
+	public static void main(String[] args) {
+		SpringApplication.run(Microservice2Application.class, args);
+	}
+
+	@Bean
+	@LoadBalanced
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
+	}
+}
+```
+
+<br/>
+
+```Java
+@RestController
+public class Microservice_2_Controller {
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Value("${service1.data.endpoint}")
+    private String service1Url;
+
+    @Autowired
+    private DiscoveryClient discoveryClient;
+
+    @GetMapping("/microservice2")
+    public String getMessage() {
+        return "Message from Microservice 2";
+    }
+
+    @GetMapping("/callService1")
+    public String callService1() {
+        // Discover service instances of microservice1
+        List<ServiceInstance> instances = discoveryClient.getInstances("microservice1");
+        if (instances != null && !instances.isEmpty()) {
+            ServiceInstance serviceInstance = instances.get(0);
+            String url = "http://" + serviceInstance.getServiceId() + service1Url;
+            return restTemplate.getForObject(url, String.class);
+        } else {
+            return "No instances available for microservice1";
+        }
+}
+}
+```
+
+### Usage
+- Run Eureka Server
+- Run Spring Cloud Config Server
+- Run Microservice1
+- Run Microservice2
+
+  <br/>
+  [http://localhost:8081/microservice1](http://localhost:8081/microservice1) should display the message : This message is from microservice 1 <br/>
+  However, when we hit [http://localhost:8081/callService2](http://localhost:8081/callService2)  this message will be shown : This message is from microservice 2
+
+ [http://localhost:8082/microservice2](http://localhost:8082/microservice2) should display the message : This message is from microservice 2 <br/>
+ However, when we hit  [http://localhost:8082/callService1](http://localhost:8081/callService1) this message will be shown : This message is from microservice 1 <br/>
+
+with this setup so far we made sure everything works fine !
+
+
