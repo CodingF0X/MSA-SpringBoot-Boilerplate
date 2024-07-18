@@ -51,7 +51,93 @@ Name the project eureka-server.
 
 3- Configure Eureka server : [Eureka Configuration](https://github.com/CodingF0X/MSA-SpringBoot-demo/blob/main/Eureka-Server/HELP.md).
 
+<br/>
 
+4- Registering Microservices with Eureka:
 
+<br/>
 
+in pom.xml file of each service, add the following: <br/>
+
+**a.** 
+
+```xml
+ <properties>
+		<java.version>17</java.version>
+		<spring-cloud.version>2023.0.2</spring-cloud.version>
+	</properties>
+```
+
+<br/>
+
+**b. Add spring cloud management dependencies :**
+
+<br/>
+
+```xml
+<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+```
+
+<br/>
+
+**c. Add Spring and netflix dependencies :** 
+
+<br/>
+
+```xml
+	   <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-config</artifactId>
+     </dependency>
+
+    <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+   </dependency>
+```
+
+<br/> 
+
+**d. In main class of each service, add @EnableDiscoveryClient** 
+
+<br/> 
+
+```Java
+@SpringBootApplication
+@EnableDiscoveryClient
+public class Microservice1Application {
+
+	public static void main(String[] args) {
+		SpringApplication.run(Microservice1Application.class, args);
+	}
+}
+```
+
+<br/>
+
+**e. in application.properties file add the following:** 
+
+<br/>
+
+```java
+spring.application.name=microservice1
+server.port=8081
+spring.config.import=optional:configserver:http://localhost:8888
+eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka
+eureka.instance.hostname=localhost
+eureka.instance.preferIpAddress=true
+eureka.client.fetch-registry=true
+```
+<br/> 
+Do the same for microservice2 !
 
