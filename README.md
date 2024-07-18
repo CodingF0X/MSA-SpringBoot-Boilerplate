@@ -1,11 +1,15 @@
 # MSA-SpringBoot-Demo
 <br/>
+
 **This project is part of of my lab assignments for Software Intensive Solution lab @ Dortmund University of Applied Sciences and Arts. In that lab, I developed a full-fledged distributed system using **Microservice Architecture and N-Tier Architecture**. Also utilized Domain Driven Design for the system design and modeling.**
+
 <br/>
+
 This project is a boilerplate and will demonstrates the integration of the two services using Eureka and Spring Cloud Config. It will also demonstrate how Circuit breaker pattern work which is used in microservices architecture to prevent cascading failures.
 
 <br/>
 <br/>
+
 **In this guide, i will devide the development into 5 chapters. This to make it easy follow up and make the work more organized.**
 
 ## CHAPTER 1 - Implementing Microservices using Spring Boot
@@ -34,12 +38,17 @@ Follow the same steps for creating Microservice 1
 Eureka is a service registry from Netflix. It helps in locating services by their name for the purpose of load balancing and failover of middle-tier servers.
 
 <br/>
+
 ### Setting Up Eureka Server
 1- Create a Eureka Server Project:
+
 <br/>
+
 2- Use [Spring Initializr](https://start.spring.io/) to generate a new project with the Eureka Server dependency.<br/>
 Name the project eureka-server.
+
 <br/>
+
 3- Configure Eureka server : [Eureka Configuration](https://github.com/CodingF0X/MSA-SpringBoot-demo/blob/main/Eureka-Server/HELP.md).
 
 
