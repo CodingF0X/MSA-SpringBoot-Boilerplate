@@ -21,13 +21,13 @@ Use [Spring Initializr](https://start.spring.io/) to generate a new project with
 Unzip the generated project and open it in your favorite IDE (I'm usiing VS Code).
 <br/>
 
-3- [Microservice 1 Configuration](https://github.com/CodingF0X/MSA-SpringBoot-Demo/tree/feature-microservice1).
+3- [Microservice 1 Configuration](https://github.com/CodingF0X/MSA-SpringBoot-demo/blob/feature-microservice1/microservice1/Microservice1.md).
 
 
 ### Creating Microservice 2
 Follow the same steps for creating Microservice 1
 
-[Microservice 2 Configuration](https://github.com/CodingF0X/MSA-SpringBoot-Demo/tree/feature-microservice2).
+[Microservice 2 Configuration](https://github.com/CodingF0X/MSA-SpringBoot-demo/blob/feature-microservice2/microservice2/Microservice2.md).
 
 
 
