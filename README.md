@@ -2,7 +2,7 @@
 <br/>
 **This project is part of of my lab assignments for Software Intensive Solution lab @ Dortmund University of Applied Sciences and Arts. In that lab, I developed a full-fledged distributed system using **Microservice Architecture and N-Tier Architecture**. Also utilized Domain Driven Design for the system design and modeling.**
 <br/>
-This project will demonstrates the integration of the two services using Eureka and Spring Cloud Config. It will also demonstrate how Circuit breaker pattern work which is used in microservices architecture to prevent cascading failures.
+This project is a boilerplate and will demonstrates the integration of the two services using Eureka and Spring Cloud Config. It will also demonstrate how Circuit breaker pattern work which is used in microservices architecture to prevent cascading failures.
 
 <br/>
 <br/>
