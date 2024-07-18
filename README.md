@@ -29,6 +29,19 @@ Follow the same steps for creating Microservice 1
 
 [Microservice 2 Configuration](https://github.com/CodingF0X/MSA-SpringBoot-demo/blob/feature-microservice2/microservice2/Microservice2.md).
 
+## CHAPTER 2 - Adding Eureka to the Solution
+### Introduction to Eureka
+Eureka is a service registry from Netflix. It helps in locating services by their name for the purpose of load balancing and failover of middle-tier servers.
+
+<br/>
+### Setting Up Eureka Server
+1- Create a Eureka Server Project:
+<br/>
+2- Use [Spring Initializr](https://start.spring.io/) to generate a new project with the Eureka Server dependency.<br/>
+Name the project eureka-server.
+<br/>
+3- Configure Eureka server : [Eureka Configuration](https://github.com/CodingF0X/MSA-SpringBoot-demo/blob/main/Eureka-Server/HELP.md).
+
 
 
 
