@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreakerFactory;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,10 @@ public class Microservice1Controller {
     @Autowired
     private DiscoveryClient discoveryClient;
 
+
+    @Autowired
+    private Resilience4JCircuitBreakerFactory circuitBreakerFactory;
+
     @GetMapping("/microservice1")
     public String getMessage() {
         return "Message from Microservice 1";
@@ -38,7 +43,10 @@ public class Microservice1Controller {
             // ResponseEntity<String> resoinse = restTemplate.getForEntity(url,
             // String.class);
             // return resoinse.toString();
-            return restTemplate.getForObject(url, String.class);
+            // // // return restTemplate.getForObject(url, String.class);
+            return circuitBreakerFactory.create("service2").run(() -> 
+                restTemplate.getForObject(url, String.class), 
+                throwable -> "Service 2 is currently unavailable. Please try again later.");
         } // String url = "http://localhost:8082"
         return "Service 2 not available";
     }
