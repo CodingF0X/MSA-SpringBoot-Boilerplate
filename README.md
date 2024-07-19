@@ -311,6 +311,48 @@ public class Microservice_2_Controller {
 }
 ```
 
+## CHAPTER 4 : Adding Circuit Breaker with Resilience4j
+
+1- Include the Resilience4j dependecy in pom.xml in each microservice: <br/>
+
+```Xml
+<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId	>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
+		</dependency>
+```
+2- In the main class, add this : <br/>
+
+```Java
+  @Bean
+  public Customizer<Resilience4JCircuitBreakerFactory> defaultCustomizer() {
+    return factory -> factory.configureDefault(id -> 
+        new Resilience4JConfigBuilder(id)
+        // Set error rate for triggering the circuit breaker to 20% 
+        // (default value: 50%)
+        .circuitBreakerConfig(CircuitBreakerConfig.custom()
+        .failureRateThreshold(20).build())
+        .build());
+```
+
+3- In the controller Class add the following : <br/>
+
+a. 
+```Java
+ @Autowired
+    private Resilience4JCircuitBreakerFactory circuitBreakerFactory;
+```
+
+b. Wrap the endpoint resonse with the circuit breaker: <br/>
+
+```Java
+ return circuitBreakerFactory.create("service2").run(() -> 
+                restTemplate.getForObject(url, String.class), 
+                throwable -> "Service 2 is currently unavailable. Please try again later.");
+```
+
+<br/>
+
 ### Usage
 - Run Eureka Server
 - Run Spring Cloud Config Server
